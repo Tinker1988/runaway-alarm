@@ -3,7 +3,7 @@ idf_component_register(
     "main.c"
     "alarm.c"
   INCLUDE_DIRS 
-    "." "../common/"
+    "." "../common/" "../drivers/"
   REQUIRES
     driver
 )
