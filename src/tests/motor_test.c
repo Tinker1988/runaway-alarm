@@ -1,29 +1,49 @@
-#include "esp_log.h"
+#include "motor_driver.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "motor_driver.h"
+#include "esp_log.h"
 
-#define IN1 GPIO_NUM_25
-#define IN2 GPIO_NUM_26
-#define PWM GPIO_NUM_27
+static const char *TAG = "MOTOR_TEST";
+
+// Motor configuration
+motor_t left_motor = {
+    .in1_pin = GPIO_NUM_25,
+    .in2_pin = GPIO_NUM_26,
+    .pwm_pin = GPIO_NUM_27,
+    .pwm_channel = LEDC_CHANNEL_0,
+};
+
+motor_t right_motor = {
+    .in1_pin = GPIO_NUM_14,
+    .in2_pin = GPIO_NUM_12,
+    .pwm_pin = GPIO_NUM_13,
+    .pwm_channel = LEDC_CHANNEL_1,
+};
 
 void app_main(void) {
-  motor_t motor = {.in1_pin = IN1,
-                   .in2_pin = IN2,
-                   .pwm_pin = PWM,
-                   .pwm_channel = LEDC_CHANNEL_0};
+    ESP_LOGI(TAG, "Initializing motors...");
+    motor_init(&left_motor);
+    motor_init(&right_motor);
 
-  motor_init(&motor);
+    while (1) {
+        ESP_LOGI(TAG, "Moving Forward");
+        motor_forward(&left_motor, 200);
+        motor_forward(&right_motor, 200);
+        vTaskDelay(pdMS_TO_TICKS(2000));
 
-  while (1) {
-    motor_forward(&motor, 200);
-    ESP_LOGI("MOTOR", "motor moving forward");
-    vTaskDelay(pdMS_TO_TICKS(2000));
-    motor_backward(&motor, 200);
-    ESP_LOGI("MOTOR", "motor moving backward");
-    vTaskDelay(pdMS_TO_TICKS(2000));
-    motor_stop(&motor);
-    ESP_LOGI("MOTOR", "motor stopped");
-    vTaskDelay(pdMS_TO_TICKS(1000));
-  }
+        ESP_LOGI(TAG, "Stopping");
+        motor_stop(&left_motor);
+        motor_stop(&right_motor);
+        vTaskDelay(pdMS_TO_TICKS(1000));
+
+        ESP_LOGI(TAG, "Moving Backward");
+        motor_backward(&left_motor, 200);
+        motor_backward(&right_motor, 200);
+        vTaskDelay(pdMS_TO_TICKS(2000));
+
+        ESP_LOGI(TAG, "Stopping");
+        motor_stop(&left_motor);
+        motor_stop(&right_motor);
+        vTaskDelay(pdMS_TO_TICKS(1000));
+    }
 }
