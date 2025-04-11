@@ -1,44 +1,40 @@
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "esp_log.h"
 #include "motor_driver.h"
 
-#define TAG "MOTOR_TEST"
+void motor_init(motor_t *motor) {
+  gpio_set_direction(motor->in1_pin, GPIO_MODE_OUTPUT);
+  gpio_set_direction(motor->in2_pin, GPIO_MODE_OUTPUT);
 
-// Define left and right motors
-motor_t left_motor = {
-    .in1_pin = GPIO_NUM_25,
-    .in2_pin = GPIO_NUM_26,
-    .pwm_pin = GPIO_NUM_27,
-    .pwm_channel = LEDC_CHANNEL_0
-};
+  ledc_timer_config_t timer_conf = {.speed_mode = LEDC_LOW_SPEED_MODE,
+                                    .timer_num = LEDC_TIMER_0,
+                                    .duty_resolution = LEDC_TIMER_8_BIT,
+                                    .freq_hz = 1000,
+                                    .clk_cfg = LEDC_AUTO_CLK};
+  ledc_timer_config(&timer_conf);
 
-motor_t right_motor = {
-    .in1_pin = GPIO_NUM_32,
-    .in2_pin = GPIO_NUM_33,
-    .pwm_pin = GPIO_NUM_14,
-    .pwm_channel = LEDC_CHANNEL_1
-};
+  ledc_channel_config_t ledc_conf = {.channel = motor->pwm_channel,
+                                     .duty = 0,
+                                     .gpio_num = motor->pwm_pin,
+                                     .speed_mode = LEDC_LOW_SPEED_MODE,
+                                     .hpoint = 0,
+                                     .timer_sel = LEDC_TIMER_0};
+  ledc_channel_config(&ledc_conf);
+}
 
-void app_main(void) {
-    ESP_LOGI(TAG, "Starting motor driver test...");
+void motor_forward(motor_t *motor, uint32_t speed) {
+  gpio_set_level(motor->in1_pin, 1);
+  gpio_set_level(motor->in2_pin, 0);
+  ledc_set_duty(LEDC_LOW_SPEED_MODE, motor->pwm_channel, speed);
+  ledc_update_duty(LEDC_LOW_SPEED_MODE, motor->pwm_channel);
+}
 
-    motor_init(&left_motor);
-    motor_init(&right_motor);
+void motor_backward(motor_t *motor, uint32_t speed) {
+  gpio_set_level(motor->in1_pin, 0);
+  gpio_set_level(motor->in2_pin, 1);
+  ledc_set_duty(LEDC_LOW_SPEED_MODE, motor->pwm_channel, speed);
+  ledc_update_duty(LEDC_LOW_SPEED_MODE, motor->pwm_channel);
+}
 
-    ESP_LOGI(TAG, "Moving forward");
-    motor_forward(&left_motor, 255);
-    motor_forward(&right_motor, 255);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    ESP_LOGI(TAG, "Reversing");
-    motor_backward(&left_motor, 255);
-    motor_backward(&right_motor, 255);
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
-    ESP_LOGI(TAG, "Stopping");
-    motor_stop(&left_motor);
-    motor_stop(&right_motor);
-
-    ESP_LOGI(TAG, "Test complete");
+void motor_stop(motor_t *motor) {
+  ledc_set_duty(LEDC_LOW_SPEED_MODE, motor->pwm_channel, 0);
+  ledc_update_duty(LEDC_LOW_SPEED_MODE, motor->pwm_channel);
 }
