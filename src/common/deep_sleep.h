@@ -1,4 +1,9 @@
-#pragma once
+#ifndef DEEP_SLEEP_H
+#define DEEP_SLEEP_H
 
-void enter_deep_sleep();
-void print_wakeup_reason();
+#include <stdint.h>
+
+void deep_sleep_init(uint64_t wakeup_time_ms);
+void deep_sleep_start();
+
+#endif // !DEEP_SLEEP_H
