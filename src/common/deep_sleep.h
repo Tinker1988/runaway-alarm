@@ -1,15 +1,12 @@
 #ifndef DEEP_SLEEP_H
 #define DEEP_SLEEP_H
 
+#include <freertos/FreeRTOS.h>
 #include <stdint.h>
 #include <time.h>
 
 // Wake-up sources
-typedef enum {
-    WAKEUP_TIMER,
-    WAKEUP_BUTTON,
-    WAKEUP_UNDEFINED
-} wakeup_reason_t;
+typedef enum { WAKEUP_TIMER, WAKEUP_BUTTON, WAKEUP_UNDEFINED } wakeup_reason_t;
 
 void deep_sleep_init(void);
 void deep_sleep_wakeup_at(int hour, int minute);
