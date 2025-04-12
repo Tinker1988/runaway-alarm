@@ -11,8 +11,8 @@ void motion_logic_update(ultrasonic_sensor_t *left_sensor,
                          ultrasonic_sensor_t *right_sensor, motor_t *left_motor,
                          motor_t *right_motor) {
   // read distances
-  float left_distance = ultrasonic_sensor_read_distance(left_sensor);
-  float right_distance = ultrasonic_sensor_read_distance(right_sensor);
+  float left_distance = ultrasonic_read_distance_cm(left_sensor);
+  float right_distance = ultrasonic_read_distance_cm(right_sensor);
 
   ESP_LOGI(TAG, "Left sensor: %.1f cm, Right sensor: %.1f cm", left_distance,
            right_distance);
