@@ -6,10 +6,10 @@
 
 // Motor structure
 typedef struct {
-    gpio_num_t in1_pin;
-    gpio_num_t in2_pin;
-    gpio_num_t pwm_pin;
-    ledc_channel_t pwm_channel;
+  gpio_num_t in1_pin;
+  gpio_num_t in2_pin;
+  gpio_num_t pwm_pin;
+  ledc_channel_t pwm_channel;
 } motor_t;
 
 // Motor driver functions
