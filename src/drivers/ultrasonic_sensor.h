@@ -1,14 +1,18 @@
-#ifndef ULTRASONIC_H
-#define ULTRASONIC_H
+#ifndef ULTRASONIC_SENSOR_H
+#define ULTRASONIC_SENSOR_H
 
-#include "driver/gpio.h"
+#include "pico/stdlib.h"
+#include <stdbool.h>
 
 typedef struct {
-    gpio_num_t trigger_pin;
-    gpio_num_t echo_pin;
-} ultrasonic_sensor_t;
+    uint8_t trigger_pin;    // Output pin to trigger measurement
+    uint8_t echo_pin;       // Input pin to receive echo
+} ultrasonic_config_t;
 
-void ultrasonic_init(ultrasonic_sensor_t *sensor);
-float ultrasonic_read_distance_cm(ultrasonic_sensor_t *sensor);
+bool ultrasonic_init(const ultrasonic_config_t *config);
 
-#endif // ULTRASONIC_H
+float ultrasonic_measure_distance_cm(const ultrasonic_config_t *config, uint32_t timeout_us);
+
+void ultrasonic_deinit(const ultrasonic_config_t *config);
+
+#endif /* ULTRASONIC_SENSOR_H */
