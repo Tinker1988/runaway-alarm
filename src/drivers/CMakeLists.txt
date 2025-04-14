@@ -1,11 +1,6 @@
-idf_component_register(
-  SRCS 
-    "motor_driver.c"
-    "ultrasonic_sensor.c"
-  INCLUDE_DIRS 
-    "."
-  REQUIRES 
-    esp_driver_gpio 
-    esp_driver_ledc
-    esp_timer
+add_library(motor_driver
+    motor_driver.c
 )
+
+target_include_directories(motor_driver PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(motor_driver pico_stdlib hardware_pwm hardware_gpio)
