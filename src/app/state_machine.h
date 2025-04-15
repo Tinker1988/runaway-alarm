@@ -1,20 +1,35 @@
-#ifndef STATE_MACHINE_H
-#define STATE_MACHINE_H
+#ifndef STATE_H
+#define STATE_H
 
-// System states
+#include "buzzer.h"
+#include "motor_driver.h"
+#include "pico/stdlib.h"
+#include "push_button.h"
+#include "ultrasonic_sensor.h"
+#include <stdint.h>
+
+// bot states
 typedef enum {
-  STATE_IDLE,        // System is idle, can enter configuration mode
-  STATE_SLEEPING,    // System is in deep sleep until alarm time
-  STATE_ALARM_ACTIVE // Alarm is active, device is running away
-} system_state_t;
+  STATE_SLEEP,  // Waiting for alarm time
+  STATE_RUNNING // Alarm active (buzzer on, robot moving)
+} state_t;
 
-// Initialize the state machine
-void state_machine_init(void);
+typedef struct {
+  uint32_t sleep_duration_ms;      // Duration of sleep state (for testing)
+  uint64_t last_state_change_time; // Timestamp of last state change
+  uint64_t next_alarm_time;        // Timestamp when alarm should trigger
+  state_t state;                   // Current state
 
-// Run the state machine (doesn't return)
-void state_machine_run(void);
+  // Components
+  buzzer_t *buzzer;
+  motor_t *left_motor;
+  motor_t *right_motor;
+  ultrasonic_sensor_t *left_sensor;
+  ultrasonic_sensor_t *right_sensor;
+  push_button_t *stop_button;
+} state_machine_t;
 
-// Get current state
-system_state_t state_machine_get_state(void);
+void state_machine_init(state_machine_t *state);
+void state_update(state_machine_t *state);
 
-#endif // STATE_MACHINE_H
+#endif // STATE_H
