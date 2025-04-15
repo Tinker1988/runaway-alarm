@@ -33,7 +33,7 @@ void state_update(state_machine_t *machine) {
     }
     break;
 
-  case ALARM_STATE_RUNNING:
+  case STATE_RUNNING:
     // Check if stop button was pressed
     if (push_button_was_pressed(machine->stop_button)) {
       printf("Alarm stopped by button press\n");
@@ -44,10 +44,10 @@ void state_update(state_machine_t *machine) {
       buzzer_off(machine->buzzer);
 
       // Set next alarm time (30 seconds from now)
-      machine->next_alarm_time = current_time + alarm->sleep_duration_ms;
+      machine->next_alarm_time = current_time + machine->sleep_duration_ms;
 
       // Change state back to sleep
-      machine->state = ALARM_STATE_SLEEP;
+      machine->state = STATE_SLEEP;
       machine->last_state_change_time = current_time;
 
       // Brief beep to confirm alarm is off

@@ -1,5 +1,4 @@
 #include "motion_logic.h"
-#include "motor_driver.h"
 #include "pico/stdlib.h"
 #include "stdio.h"
 
@@ -8,6 +7,7 @@
 void motion_logic_update(ultrasonic_sensor_t *left_sensor,
                          ultrasonic_sensor_t *right_sensor, motor_t *left_motor,
                          motor_t *right_motor) {
+
   // read distances
   float left_distance = ultrasonic_read_distance_cm(left_sensor);
   float right_distance = ultrasonic_read_distance_cm(right_sensor);

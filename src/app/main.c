@@ -1,9 +1,10 @@
-#include "buzzer.h"
-#include "motor_driver.h"
+#include "../drivers/buzzer.h"
+#include "../drivers/motor_driver.h"
+#include "../drivers/push_button.h"
+#include "../drivers/ultrasonic_sensor.h"
 #include "pico/stdlib.h"
-#include "push_button.h"
 #include "state_machine.h"
-#include "ultrasonic_sensor.h"
+#include <stdbool.h>
 #include <stdio.h>
 
 // Pin definitions
@@ -89,7 +90,7 @@ int main() {
 
   // Main loop
   while (true) {
-    state_update(&alarm);
+    state_update(&machine);
   }
 
   return 0;

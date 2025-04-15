@@ -3,6 +3,8 @@
 
 #include "hardware/pwm.h"
 #include "pico/stdlib.h"
+#include <stdint.h>
+#include <sys/types.h>
 
 typedef struct {
   uint in1_pin;
