@@ -1,6 +1,16 @@
-add_library(motor_driver
+add_library(drivers
     motor_driver.c
+    ultrasonic_sensor.c
+    push_button.c
+    buzzer.c
 )
 
-target_include_directories(motor_driver PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(motor_driver pico_stdlib hardware_pwm hardware_gpio)
+target_include_directories(drivers PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+# Link against pico libraries
+target_link_libraries(drivers
+    pico_stdlib
+    hardware_pwm
+    hardware_gpio
+    hardware_timer
+)
