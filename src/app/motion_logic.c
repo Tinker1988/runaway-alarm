@@ -1,10 +1,8 @@
 #include "motion_logic.h"
-#include "esp_log.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
+#include "stdio.h"
+#include "pico/stdlib.h"
 #include "motor_driver.h"
 
-#define TAG "MOTION_LOGIC"
 #define OBSTACLE_THRESHOLD_CM 20.0
 
 void motion_logic_update(ultrasonic_sensor_t *left_sensor,
@@ -14,32 +12,29 @@ void motion_logic_update(ultrasonic_sensor_t *left_sensor,
   float left_distance = ultrasonic_read_distance_cm(left_sensor);
   float right_distance = ultrasonic_read_distance_cm(right_sensor);
 
-  ESP_LOGI(TAG, "Left sensor: %.1f cm, Right sensor: %.1f cm", left_distance,
-           right_distance);
+  printf("Left sensor: %.1f cm, Right sensor: %.1f cm\n", left_distance, right_distance);
 
   // determine if there's an obstacle within threshold dist
-  bool obstacle_left =
-      (left_distance > 0 && left_distance < OBSTACLE_THRESHOLD_CM);
-  bool obstacle_right =
-      (right_distance > 0 && right_distance < OBSTACLE_THRESHOLD_CM);
+  bool obstacle_left = (left_distance > 0 && left_distance < OBSTACLE_THRESHOLD_CM);
+  bool obstacle_right = (right_distance > 0 && right_distance < OBSTACLE_THRESHOLD_CM);
 
   if (obstacle_left && obstacle_right) {
-    ESP_LOGI(TAG, "Obstacles on both sides. Reversing.");
+    printf("Obstacles on both sides. Reversing.\n");
     motor_backward(left_motor, 200);
     motor_backward(right_motor, 200);
   } else if (obstacle_left) {
-    ESP_LOGI(TAG, "Obstacle on left. Turning right.");
+    printf("Obstacle on left. Turning right.\n");
     motor_forward(left_motor, 200);
     motor_backward(right_motor, 200);
   } else if (obstacle_right) {
-    ESP_LOGI(TAG, "Obstacle on right. Turning left.");
+    printf("Obstacle on right. Turning left.\n");
     motor_forward(right_motor, 200);
     motor_backward(left_motor, 200);
   } else {
-    ESP_LOGI(TAG, "Path is clear. Moving forward.");
+    printf("Path is clear. Moving forward.\n");
     motor_forward(left_motor, 200);
     motor_forward(right_motor, 200);
   }
 
-  vTaskDelay(pdMS_TO_TICKS(300));
+  sleep_ms(300); // 300 ms delay
 }
