@@ -1,7 +1,7 @@
 #include "motion_logic.h"
-#include "stdio.h"
-#include "pico/stdlib.h"
 #include "motor_driver.h"
+#include "pico/stdlib.h"
+#include "stdio.h"
 
 #define OBSTACLE_THRESHOLD_CM 20.0
 
@@ -12,11 +12,14 @@ void motion_logic_update(ultrasonic_sensor_t *left_sensor,
   float left_distance = ultrasonic_read_distance_cm(left_sensor);
   float right_distance = ultrasonic_read_distance_cm(right_sensor);
 
-  printf("Left sensor: %.1f cm, Right sensor: %.1f cm\n", left_distance, right_distance);
+  printf("Left sensor: %.1f cm, Right sensor: %.1f cm\n", left_distance,
+         right_distance);
 
   // determine if there's an obstacle within threshold dist
-  bool obstacle_left = (left_distance > 0 && left_distance < OBSTACLE_THRESHOLD_CM);
-  bool obstacle_right = (right_distance > 0 && right_distance < OBSTACLE_THRESHOLD_CM);
+  bool obstacle_left =
+      (left_distance > 0 && left_distance < OBSTACLE_THRESHOLD_CM);
+  bool obstacle_right =
+      (right_distance > 0 && right_distance < OBSTACLE_THRESHOLD_CM);
 
   if (obstacle_left && obstacle_right) {
     printf("Obstacles on both sides. Reversing.\n");
