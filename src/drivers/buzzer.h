@@ -2,7 +2,6 @@
 #define ACTIVE_BUZZER_H
 
 #include "pico/stdlib.h"
-#include <sys/types.h>
 
 typedef struct {
   uint pin;
