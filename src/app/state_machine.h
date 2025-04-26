@@ -6,7 +6,6 @@
 #include "../drivers/push_button.h"
 #include "../drivers/ultrasonic_sensor.h"
 #include "pico/stdlib.h"
-#include <stdint.h>
 
 // bot states
 typedef enum {
@@ -24,9 +23,11 @@ typedef struct {
   buzzer_t *buzzer;
   motor_t *left_motor;
   motor_t *right_motor;
-  ultrasonic_sensor_t *left_sensor;
-  ultrasonic_sensor_t *right_sensor;
-  push_button_t *stop_button;
+  ultrasonic_config_t *left_sensor;
+  ultrasonic_config_t *right_sensor;
+  button_t *stop_button;
+  bool last_button_state;
+  uint64_t last_debounce_time;
 } state_machine_t;
 
 void state_machine_init(state_machine_t *state);
